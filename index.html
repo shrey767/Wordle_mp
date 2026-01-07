@@ -1,0 +1,35 @@
+ <!DOCTYPE html>
+ <html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title></title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="style.css">
+    </head>
+    <body>
+        <div class="overlay" id="overlay">
+            <div class="popup" id="popup">
+                <h2 id="message"></h2>
+                <div class="buttons">
+                    <button id="reset" class="button">RESET</button>
+                    <button id="playAgain" class="button">PLAY AGAIN</button>
+                </div>
+            </div>
+        </div> 
+        <div class="prompt">
+            <h1 id="notValid">Not in word list</h1>
+        </div>
+        <div class="container">
+            <div id="grid"></div>
+            <div id="statistics" class="statistics">
+                <p id="played">Played: 0</p>
+                <p id="totalCorrect">Correctly Guessed: 0</p>
+                <p id="average">Average: 0</p>
+                <p style="font-weight: 600;">Unable to guess counts as 8 tries</p>
+            </div>
+        </div>
+        <script src="script.js" async defer></script>
+    </body>
+ </html>

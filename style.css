@@ -1,0 +1,103 @@
+#grid {
+  display: grid;
+  grid-template-columns: repeat(5, 60px);
+  gap: 8px;
+  justify-content: center;
+}
+
+.cell {
+  width: 60px;
+  height: 60px;
+  border: 2px solid #555;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  font-weight: bold;
+  text-transform: uppercase;
+  user-select: none;
+}
+
+.cell.cow{
+  background-color: yellow;
+}
+
+.cell.bull{
+  background-color: greenyellow;
+}
+
+.cell.nil{
+  background-color: #9d9595;
+}
+
+.prompt{
+  text-align: center;
+  margin: 10px;
+}
+
+#notValid{
+  display: none;
+  text-align: center;
+  border-radius: 4px;
+  color: aliceblue;
+  background-color: #555;
+  font-size: medium;
+  font-family: 'Courier New', Courier, monospace;
+  padding: 4px 4px;
+  margin:0 auto;
+}
+
+
+.buttons{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 50px;
+  padding-top: 50px;
+}
+
+button{
+  width: 100px;
+  height: 40px;
+  font-size: medium;
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+
+/* Full-screen dark overlay */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.6);
+
+  display: none;          /* hidden by default */
+  justify-content: center;
+  align-items: center;
+
+  z-index: 1000;
+}
+
+/* Popup box */
+.popup {
+  background: white;
+  padding: 20px 30px;
+  border-radius: 8px;
+  width: auto;
+  text-align: center;
+}
+
+.container{
+  display: flex;
+  flex-direction: row;
+  padding-left: 500px;
+  gap: 400px;
+}
+.statistics{
+  justify-content: flex-end;
+}
+
+p{
+  font-family: Arial, Helvetica, sans-serif ;
+}
