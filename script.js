@@ -22,6 +22,11 @@ message = document.getElementById("message");
 playedContent = document.getElementById("played");
 guessedConent = document.getElementById("totalCorrect");
 averageContent = document.getElementById("average");
+tryFrequency = Array(ROWS).fill(0);
+barGraph=[]
+for(i=0;i<ROWS;i++){
+  barGraph.push(document.getElementById(`bar${i+1}`));
+}
 
 let guessedFlag=false;
 
@@ -46,6 +51,17 @@ function updateStats(guessed,tries){
   playedContent.textContent=`Played: ${played}`;
   guessedConent.textContent=`Correctly Guessed: ${correctlyGuesssed}`;
   averageContent.textContent=`Average: ${average}`;
+  tryFrequency[tries-1]++;
+  console.log(tryFrequency,played)
+  for(i=0;i<ROWS;i++){
+    document.getElementById(`bar${i+1}`).style.width = `${(tryFrequency[i]/played)*100}%`;
+    barGraph[i].textContent=tryFrequency[i];
+  }
+}
+
+
+function displayOverlay(){
+  overlay.style.display="flex";
 }
 
 function checkGuess(guess,start_idx){
@@ -60,8 +76,8 @@ function checkGuess(guess,start_idx){
       for(j=0;j<COLS;j++){
         cells[start_idx + j].classList.add("bull");
       }
-      overlay.style.display="flex";
       updateStats(guessedFlag,tries);
+      displayOverlay();
       return;
     }
 
@@ -96,8 +112,8 @@ function checkGuess(guess,start_idx){
   console.log(guess,tries,guessedFlag);
   if(tries==6 && guessedFlag==false){
     message.textContent=`Oops! The word was ${answer.toUpperCase()}, better luck next time!`
-    overlay.style.display="flex";
     updateStats(guessedFlag,tries);
+    displayOverlay();
   }
   
 }
@@ -144,6 +160,7 @@ resetButton.addEventListener("click", () => {
   for (let i = 0; i < ROWS * COLS; i++) {
     cells[i].textContent="";
     answer = answerArray[Math.floor(Math.random()*(answerArray.length))];
+    console.log(answer);
     index=0;
     cells[i].className = "cell";
     overlay.style.display="none";
