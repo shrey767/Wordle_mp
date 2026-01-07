@@ -109,6 +109,7 @@ p{
   display: flex;
   flex-direction: column;
   gap: 5px;
+  background-color: white;
   overflow: hidden;
   text-align: end;
 }

@@ -53,8 +53,10 @@ function updateStats(guessed,tries){
   averageContent.textContent=`Average: ${average}`;
   tryFrequency[tries-1]++;
   console.log(tryFrequency,played)
-  for(i=0;i<ROWS;i++){
-    document.getElementById(`bar${i+1}`).style.width = `${(tryFrequency[i]/played)*100}%`;
+  for(let i=0;i<ROWS;i++){
+    setTimeout(() => {
+      document.getElementById(`bar${i+1}`).style.width = `${(tryFrequency[i]/played)*100}%`;
+    },50)
     barGraph[i].textContent=tryFrequency[i];
   }
 }
@@ -76,8 +78,9 @@ function checkGuess(guess,start_idx){
       for(j=0;j<COLS;j++){
         cells[start_idx + j].classList.add("bull");
       }
-      updateStats(guessedFlag,tries);
       displayOverlay();
+      updateStats(guessedFlag,tries);
+      
       return;
     }
 
@@ -112,8 +115,9 @@ function checkGuess(guess,start_idx){
   console.log(guess,tries,guessedFlag);
   if(tries==6 && guessedFlag==false){
     message.textContent=`Oops! The word was ${answer.toUpperCase()}, better luck next time!`
-    updateStats(guessedFlag,tries);
     displayOverlay();
+    updateStats(guessedFlag,tries);
+    
   }
   
 }
