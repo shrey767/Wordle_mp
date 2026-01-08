@@ -2,10 +2,14 @@ const ROWS = 6;
 const COLS = 5;
 const grid = document.getElementById("grid");
 const cells = [];
+
 let index = 0;
 let played=0;
 let correctlyGuesssed=0;
 let average = 0;
+duration = 300;
+
+
 
 let GUESS_SET = [];
 let ANSWER_SET = [];
@@ -27,11 +31,11 @@ barGraph=[]
 for(i=0;i<ROWS;i++){
   barGraph.push(document.getElementById(`bar${i+1}`));
 }
-
+let wait = ms => new Promise(r => setTimeout(r,ms));
 let guessedFlag=false;
 
+
 let answer = answerArray[Math.floor(Math.random()*(answerArray.length))]
-console.log(answer)
 for (let i = 0; i < ROWS * COLS; i++) {
   const cell = document.createElement("div");
   cell.className = "cell";
@@ -39,6 +43,30 @@ for (let i = 0; i < ROWS * COLS; i++) {
   cells.push(cell);
 }
 let tries=0;
+
+// async function waitForTransform(cell){
+//   const handler = e => {
+//     if(e.propertyName!=="transform") return;
+//     resolve();
+//     cell.removeEventListener("transitionend",handler);
+//   }
+//   cell.addEventListener("transitionend",handler);
+// }
+
+async function flip_cell(cell,arg){
+  cell.style.transform = "rotateX(90deg)";
+  await wait(duration);
+
+  cell.classList.add(arg);
+  cell.style.transform = "rotateX(0deg)";
+  await wait(duration-200);
+  
+  keys[cell.textContent.toLowerCase()].classList.add(arg);
+
+  return Promise.resolve();
+}
+
+
 
 function updateStats(guessed,tries){
   if(guessed){
@@ -52,7 +80,6 @@ function updateStats(guessed,tries){
   guessedConent.textContent=`Correctly Guessed: ${correctlyGuesssed}`;
   averageContent.textContent=`Average: ${average}`;
   tryFrequency[tries-1]++;
-  console.log(tryFrequency,played)
   for(let i=0;i<ROWS;i++){
     setTimeout(() => {
       document.getElementById(`bar${i+1}`).style.width = `${(tryFrequency[i]/played)*100}%`;
@@ -85,15 +112,15 @@ function checkGuess(guess,start_idx){
     }
 
     const counted = Array(COLS).fill(0);
+    const type = Array(COLS).fill("");
     for(i=0;i<COLS;i++){
       for(j=0;j<COLS;j++){
-        // console.log(counted);
         if(answer[i]===guess[j] && counted[j]==0){
           if(i==j){
-            cells[start_idx + j].classList.add("bull");
+            type[j]="bull";
           }
           else{
-            cells[start_idx + j].classList.add("cow");
+            type[j]="cow"
           }
           counted[j]=1;
           break;
@@ -102,9 +129,13 @@ function checkGuess(guess,start_idx){
     }
     for(i=0;i<COLS;i++){
       if(counted[i]==0){
-        cells[start_idx + i].classList.add("nil");
+        type[i]="nil";
       }
     }
+    (async () => {
+      for(let i=0;i<COLS;i++){
+      await flip_cell(cells[start_idx + i],type[i]);
+    }}) ();
   }
   else{
     const isNotValid = document.getElementById("notValid");
@@ -112,7 +143,6 @@ function checkGuess(guess,start_idx){
     setTimeout(() => isNotValid.style.display="none",1000);
   }
   
-  console.log(guess,tries,guessedFlag);
   if(tries==6 && guessedFlag==false){
     message.textContent=`Oops! The word was ${answer.toUpperCase()}, better luck next time!`
     displayOverlay();
@@ -123,29 +153,27 @@ function checkGuess(guess,start_idx){
 }
 // create grid
 
-
-// global keyboard listener (Wordle-style)
-document.addEventListener("keydown", (e) => {
+function handleKey(key){
   if(index>ROWS*COLS){
     return;
   }
   // letters
-  if (e.key.length === 1 && /[a-z]/i.test(e.key)) {
+  if (key.length === 1 && /[a-z]/i.test(key)) {
     if (index < (tries+1)*COLS) {
-      cells[index].textContent = e.key.toUpperCase();
+      cells[index].textContent = key.toUpperCase();
       index++;
     }
   }
 
   // backspace
-  if (e.key === "Backspace") {
+  if (key === "Backspace") {
     if (index > tries*COLS) {
       index--;
       cells[index].textContent = "";
     }
   }
   // enter
-  if (e.key === "Enter") {
+  if (key === "Enter") {
     if((index)%COLS==0){
         let start_idx = index-COLS;
         let guess = "";
@@ -156,23 +184,88 @@ document.addEventListener("keydown", (e) => {
         checkGuess(guess,start_idx);
     }
   }
+}
+
+// global keyboard listener (Wordle-style)
+document.addEventListener("keydown", (e) => {
+  handleKey(e.key)
 });
 
 
 
 resetButton.addEventListener("click", () => {
+  overlay.style.display="none";
+  index=0;
+  answer = answerArray[Math.floor(Math.random()*(answerArray.length))];
   for (let i = 0; i < ROWS * COLS; i++) {
     cells[i].textContent="";
-    answer = answerArray[Math.floor(Math.random()*(answerArray.length))];
-    console.log(answer);
-    index=0;
     cells[i].className = "cell";
-    overlay.style.display="none";
   }
+  for(let i=0;i<ROWS;i++){
+    document.getElementById(`bar${i+1}`).style.width = `0`;
+  }
+  tries=0;
 });
 
 playAgainButton.addEventListener("click", () => {
   resetButton.click();
 });
 
+let keyboard = document.getElementById("keyboard")
+let row1 = document.getElementById("row1");
+let row2 = document.getElementById("row2");
+let row3 = document.getElementById("row3");
+
+row1Letters= "qwertyuiop";
+row2Letters = "asdfghjkl";
+row3Letters = "zxcvbnm";
+
+keys= {}
+
+for(const letter of row1Letters){
+  const key = document.createElement("button");
+  key.textContent=letter.toUpperCase();
+  key.className="key"
+  row1.appendChild(key);
+  keys[letter] = key;
+}
+
+for(const letter of row2Letters){
+  const key = document.createElement("button");
+  key.textContent=letter.toUpperCase();
+  key.className="key"
+  row2.appendChild(key);
+  keys[letter] = key;
+}
+
+const key = document.createElement("button");
+key.textContent = "Enter";
+key.addEventListener("click", () => {
+    handleKey("Enter");
+  })
+row3.appendChild(key);
+
+for(const letter of row3Letters){
+  const key = document.createElement("button");
+  key.textContent=letter.toUpperCase();
+  key.className="key"
+  row3.appendChild(key);
+  keys[letter] = key;
+}
+
+const key2 = document.createElement("button");
+key2.textContent = "Backspace";
+row3.appendChild(key2);
+key2.addEventListener("click", () => {
+    handleKey("Backspace");
+});
+
+
+
+for(const key in keys){
+  // console.log(key);
+  keys[key].addEventListener("click", () => {
+    handleKey(key);
+  })
+}
 

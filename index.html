@@ -26,11 +26,20 @@
                 </div>
             </div>
         </div> 
-        <div class="prompt">
-            <h1 id="notValid">Not in word list</h1>
-        </div>
+        
         <div class="container">
-            <div id="grid"></div>
+            
+            <div id="gridboard" class="gridboard">
+                <div class="prompt">
+                    <h1 id="notValid">Not in word list</h1>
+                </div>
+                <div id="grid"></div>
+                <div id="keyboard" class="keyboard">
+                    <div id="row1" class="row"> </div>
+                    <div id="row2" class="row"> </div>
+                    <div id="row3" class="row"> </div>
+                </div>
+            </div>
             <div id="statistics" class="statistics">
                 <p id="played">Played: 0</p>
                 <p id="totalCorrect">Correctly Guessed: 0</p>
@@ -38,6 +47,7 @@
                 <p style="font-weight: 600;">Unable to guess counts as 8 tries</p>
             </div>
         </div>
+        
 
         <script src="script.js" async defer></script>
     </body>
